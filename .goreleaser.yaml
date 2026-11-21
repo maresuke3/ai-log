@@ -1,0 +1,50 @@
+version: 2
+
+project_name: ai-log
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+archives:
+  - formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+# Step 2/3 で homebrew-tap リポジトリを作成した後に有効化してください
+# brews:
+#   - repository:
+#       owner: maresuke3
+#       name: homebrew-tap
+#       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+#     directory: Formula
+#     homepage: "https://github.com/maresuke3/ai-log"
+#     description: "Visualize Antigravity CLI and Claude Code local logs in the terminal"
+#     test: |
+#       system "#{bin}/ai-log", "--help"
